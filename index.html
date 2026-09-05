@@ -470,7 +470,7 @@
         // =========================================================
         // MASUKKAN URL WEB APP GOOGLE SCRIPT ANDA DI SINI
         // =========================================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbyysya1TX1mtt0Iv8Tot3rX52qPZwhkeke2qhU3pEZx97r5Zgey5pdwpaDqac2SgYvY/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbwz-4lCwVFzgb9WyW1yfQpCLJSRMOMLMpewJr-Rm472Kb3R0yjMZoJoooPLMMUSFzym/exec"; 
         
         // --- GLOBAL VARIABLES & STATE ---
         let html5QrcodeScanner = null;
@@ -648,7 +648,7 @@
 
         // --- API COMMUNICATION ---
         async function callBackend(payload) {
-            if (API_URL === "https://script.google.com/macros/s/AKfycbyysya1TX1mtt0Iv8Tot3rX52qPZwhkeke2qhU3pEZx97r5Zgey5pdwpaDqac2SgYvY/exec") {
+            if (API_URL === "https://script.google.com/macros/s/AKfycbwz-4lCwVFzgb9WyW1yfQpCLJSRMOMLMpewJr-Rm472Kb3R0yjMZoJoooPLMMUSFzym/exec") {
                 console.warn("API URL belum diisi. Menjalankan mode MOCK (Simulasi).");
                 return mockBackend(payload);
             }
