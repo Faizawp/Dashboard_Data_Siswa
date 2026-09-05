@@ -443,7 +443,7 @@
         // =========================================================
         // MASUKKAN URL WEB APP GOOGLE SCRIPT ANDA DI SINI
         // =========================================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbymq8D3GtYCypgfDMiLfA9s-BFmxEipewZ125FakFxQebHmSaNxaLRaLt6oTgfm59L4/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbwE7C8qflptuU_hHtVirm57wp6Ax6HT6HP8jz1-IRJqx-VEPF_EP-vcvk6tbLdUfBt7/exec"; // GANTI BAGIAN INI!
         
         // --- GLOBAL VARIABLES & STATE ---
         let html5QrcodeScanner = null;
@@ -460,20 +460,20 @@
         const appState = {
             config: { 'Batas Waktu Hadir': '07:15', 'Nama Sekolah': 'SMP Negeri 1 (Mode Preview)' },
             students: [
-                { 'NISN': '123456789', 'Nama Siswa': 'Budi Santoso', 'Kelas': '7-A', 'QR Code ID': 'SMP-7A-001' },
-                { 'NISN': '987654321', 'Nama Siswa': 'Siti Aminah', 'Kelas': '7-B', 'QR Code ID': 'SMP-7B-001' },
-                { 'NISN': '112233445', 'Nama Siswa': 'Joko Anwar', 'Kelas': '8-A', 'QR Code ID': 'SMP-8A-001' },
-                { 'NISN': '556677889', 'Nama Siswa': 'Dewi Lestari', 'Kelas': '8-A', 'QR Code ID': 'SMP-8A-002' },
+                { 'NISN': '123456789', 'Nama Siswa': 'Budi Santoso', 'Kelas': '7A', 'QR Code ID': 'SMP-7A-001' },
+                { 'NISN': '987654321', 'Nama Siswa': 'Siti Aminah', 'Kelas': '7B', 'QR Code ID': 'SMP-7B-001' },
+                { 'NISN': '112233445', 'Nama Siswa': 'Joko Anwar', 'Kelas': '8A', 'QR Code ID': 'SMP-8A-001' },
+                { 'NISN': '556677889', 'Nama Siswa': 'Dewi Lestari', 'Kelas': '8A', 'QR Code ID': 'SMP-8A-002' },
             ],
             attendance: [
-                { 'Tanggal': new Date().toISOString().split('T')[0], 'Waktu': '07:05', 'NISN': '123456789', 'Nama Siswa': 'Budi Santoso', 'Kelas': '7-A', 'Status Kehadiran': 'Hadir', 'QR Code ID': 'SMP-7A-001' },
-                { 'Tanggal': new Date().toISOString().split('T')[0], 'Waktu': '07:20', 'NISN': '987654321', 'Nama Siswa': 'Siti Aminah', 'Kelas': '7-B', 'Status Kehadiran': 'Terlambat', 'QR Code ID': 'SMP-7B-001' }
+                { 'Tanggal': new Date().toISOString().split('T')[0], 'Waktu': '07:05', 'NISN': '123456789', 'Nama Siswa': 'Budi Santoso', 'Kelas': '7A', 'Status Kehadiran': 'Hadir', 'QR Code ID': 'SMP-7A-001' },
+                { 'Tanggal': new Date().toISOString().split('T')[0], 'Waktu': '07:20', 'NISN': '987654321', 'Nama Siswa': 'Siti Aminah', 'Kelas': '7B', 'Status Kehadiran': 'Terlambat', 'QR Code ID': 'SMP-7B-001' }
             ],
             tugas: [
-                { 'Tanggal': '2023-10-25', 'NISN': '123456789', 'Nama Siswa': 'Budi Santoso', 'Kelas': '7-A', 'Tugas': 'Bab 1', 'Status': 'Sudah Mengumpulkan', 'Nilai': 85, 'Tipe': 'info' },
-                { 'Tanggal': '2023-10-25', 'NISN': '987654321', 'Nama Siswa': 'Siti Aminah', 'Kelas': '7-B', 'Tugas': 'Prakarya 1', 'Status': 'Sudah Mengumpulkan', 'Nilai': 90, 'Tipe': 'kka' }
+                { 'Tanggal': '2023-10-25', 'NISN': '123456789', 'Nama Siswa': 'Budi Santoso', 'Kelas': '7A', 'Tugas': 'Bab 1', 'Status': 'Sudah Mengumpulkan', 'Nilai': 85, 'Tipe': 'info' },
+                { 'Tanggal': '2023-10-25', 'NISN': '987654321', 'Nama Siswa': 'Siti Aminah', 'Kelas': '7B', 'Tugas': 'Prakarya 1', 'Status': 'Sudah Mengumpulkan', 'Nilai': 90, 'Tipe': 'kka' }
             ],
-            classes: ['7-A', '7-B', '7-C', '8-A', '8-B', '9-A', '9-B']
+            classes: ['7A', '7B', '7C', '8A', '8B', '9A', '9B']
         };
 
         // --- GLOBAL WINDOW FUNCTIONS (Didaftarkan ke window agar dipanggil via onclick HTML) ---
@@ -918,7 +918,25 @@
             html5QrcodeScanner.render(onScanSuccess, (err)=>{});
         };
 
+        // --- TAMBAHKAN VARIABEL INI ---
+        let isProcessingScan = false;
+        // ------------------------------
+
         async function onScanSuccess(decodedText) {
+            // --- FITUR BARU: MENCEGAH SCAN BERKALI-KALI (COOLDOWN) ---
+            if (isProcessingScan) return; // Jika sedang memproses/jeda, abaikan scan
+            isProcessingScan = true;      // Kunci scanner
+            
+            // Set jeda 3 detik (3000 ms) sebelum bisa scan lagi
+            setTimeout(() => {
+                isProcessingScan = false;
+                document.getElementById('scan-result').innerHTML = `
+                    <div class="text-gray-400 mb-2"><i class="fas fa-qrcode text-3xl"></i></div>
+                    <p class="text-sm text-gray-500">Scanner Siap...</p>
+                `;
+            }, 3000);
+            // ---------------------------------------------------------
+
             // Play Beep
             const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-09.mp3');
             audio.play().catch(e => {});
