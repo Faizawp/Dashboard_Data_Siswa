@@ -443,7 +443,7 @@
         // =========================================================
         // MASUKKAN URL WEB APP GOOGLE SCRIPT ANDA DI SINI
         // =========================================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbwa-W8qOmdr0iB6Dn0lY_P_2-pz0zkRqHDUdTXGEDghrYgUOCXNJgIz_wFNo5BQVaWk/exec"; // GANTI BAGIAN INI!
+        const API_URL = "https://script.google.com/macros/s/AKfycbyqK2wmYTOYSKvadG2RuOem_9HKZU7ZCSckHEOkGGlJ6pJSuwWBtlvf5-m80UVpY8gP/exec"; // GANTI BAGIAN INI!
         
         // --- GLOBAL VARIABLES & STATE ---
         let html5QrcodeScanner = null;
@@ -595,25 +595,7 @@
         };
 
         window.saveTaskManual = function() {
-            const namaTugas = document.getElementById('modal-tugas-nama').value;
-            const nisn = document.getElementById('modal-tugas-siswa').value;
-            const nilai = document.getElementById('modal-tugas-nilai').value;
-
-            if(!namaTugas || !nisn) {
-                Swal.fire('Peringatan', 'Nama tugas dan Siswa wajib diisi!', 'warning');
-                return;
-            }
-
-            const student = appState.students.find(s => s.NISN === nisn);
-            const todayStr = new Date().toISOString().split('T')[0];
-            
-            // Simulate API save
-            appState.tugas.push({
-                'Tanggal': todayStr, 'NISN': student['NISN'], 'Nama Siswa': student['Nama Siswa'],
-                'Kelas': student['Kelas'], 'Tugas': namaTugas, 'Status': 'Input Manual',
-                'Nilai': nilai || 0, 'Tipe': currentActiveTaskType
-            });
-
+            // ... isi fungsi ini dibiarkan saja ...
             Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Tugas Disimpan', showConfirmButton: false, timer: 1500 });
             window.closeTaskModal();
             window.renderTugas();
@@ -627,13 +609,9 @@
             }
 
             try {
-                // Menggunakan text/plain dan redirect: follow untuk Bypass CORS
+                // Mengirim sebagai text/plain default secara diam-diam (Simple Request)
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    redirect: 'follow', // SANGAT PENTING untuk Google Apps Script
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8',
-                    },
                     body: JSON.stringify(payload)
                 });
                 
