@@ -470,7 +470,7 @@
         // =========================================================
         // MASUKKAN URL WEB APP GOOGLE SCRIPT ANDA DI SINI
         // =========================================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbz7s0nmiyUrz0c6D_GkUolfZs_mDhB2S_GQuIJiZ4IBuGtTGusSpj-2oBjQZ_hJb2gh/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbzuQvEz92-Tmvd_AOc1u85RhXFfqeezFC0q_y86wbd8p01cl0_wDJN76l4XxBDWQyZK/exec"; 
         
         // --- GLOBAL VARIABLES & STATE ---
         let html5QrcodeScanner = null;
@@ -648,22 +648,32 @@
 
         // --- API COMMUNICATION ---
         async function callBackend(payload) {
-            if (API_URL === "ISI_DENGAN_URL_WEB_APP_GOOGLE_SCRIPT_ANDA") {
+            if (API_URL === "https://script.google.com/macros/s/AKfycbzuQvEz92-Tmvd_AOc1u85RhXFfqeezFC0q_y86wbd8p01cl0_wDJN76l4XxBDWQyZK/exec") {
                 console.warn("API URL belum diisi. Menjalankan mode MOCK (Simulasi).");
                 return mockBackend(payload);
             }
 
             try {
+                // Gunakan URLSearchParams (Form Data) untuk mematikan Preflight CORS
+                const formBody = new URLSearchParams();
+                formBody.append("data", JSON.stringify(payload));
+
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    redirect: 'follow', 
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(payload)
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formBody.toString()
                 });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
+                
                 return await response.json();
             } catch (error) {
                 console.error("Gagal menghubungi server:", error);
-                return { success: false, message: "Koneksi gagal. Pastikan URL API benar." };
+                return { success: false, message: "Koneksi diblokir (CORS) atau Server Error. Cek jaringan Anda." };
             }
         }
 
